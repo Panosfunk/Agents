@@ -9,7 +9,7 @@
  *
  * @author Giannis
  */
-public class JavaApplication5 {
+public class Agents {
 
     static Maze maze;
     /**

@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.net.URL;
@@ -69,7 +68,7 @@ public class GUI extends JFrame {
         frame.setResizable(true);
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        maze = JavaApplication5.maze;
+        maze = Agents.maze;
         numberOfRows = maze.getRows();
         numberOfCols = maze.getCols();
 
