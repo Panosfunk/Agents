@@ -22,10 +22,17 @@ public class Agent {
     ArrayList<Move> validMoves;
     State state;
     boolean won;
+    Pair position;                  //his position is a pair of coordinates
     
     public Agent(int id) {
         this.id = id;
         won = false;
+        position = new Pair();
+    }
+    public Agent(int id, int x, int y) {
+        this.id = id;
+        won = false;
+        position = new Pair(x, y);
     }
     
     void setWin(boolean won)

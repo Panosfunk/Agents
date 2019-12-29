@@ -9,6 +9,7 @@ public class GUI extends JFrame {
     private static final int GRID_GAP_SIZE = 0;     // gap size between each grid cell
 
     Maze maze;
+    Agent agent1, agent2;
 
     private JFrame frame;
     private JPanel panel;
@@ -22,35 +23,24 @@ public class GUI extends JFrame {
     private void setMapPanel(){
         panel = new JPanel();
         backgroundImages = new JLabel[numberOfRows][numberOfCols];
-        for ( int i = 0; i < numberOfCols; i++){
-            for ( int j = 0; j < numberOfRows; j++){
+        for ( int i = 0; i < numberOfRows; i++){
+            for ( int j = 0; j < numberOfCols; j++){
                 backgroundImages[i][j] = new JLabel();
                 backgroundImages[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 if(maze.getCell(i, j) == Maze.WALL) {
-                    String imgName = "images/wall.jpg";
-                    URL imageURL = getClass().getResource(imgName);
-                    if (imageURL != null) {
-                        backside = new ImageIcon(imageURL);
-                    }
-                    backgroundImages[i][j].setIcon(backside);
+                    changeIcon(i, j,"images/wall.jpg");
                 }else if ( maze.getCell(i, j) == Maze.PASS){
-                    String imgName = "images/tile.jpg";
-                    URL imageURL = getClass().getResource(imgName);
-                    if (imageURL != null) {
-                        backside = new ImageIcon(imageURL);
+                    if(i == agent1.position.x && j == agent1.position.y){
+                        changeIcon(i, j, "images/jamesBondOnTile.jpg");
+                    }else if ( i == agent2.position.x && j == agent2.position.y){
+                        changeIcon(i, j, "images/manInBlackOnTile.jpg");
                     }
-                    backgroundImages[i][j].setIcon(backside);
+                    else {
+                        changeIcon(i, j, "images/tile.jpg");
+                    }
                 }else if ( maze.getCell(i, j) == Maze.EXIT){
-                    String imgName = "images/finish.jpg";
-                    URL imageURL = getClass().getResource(imgName);
-                    if (imageURL != null) {
-                        backside = new ImageIcon(imageURL);
-                    }
-                    backgroundImages[i][j].setIcon(backside);
-
+                    changeIcon(i, j,"images/finish.jpg");
                 }
-
-
                 panel.add(backgroundImages[i][j]);
             }
         }
@@ -60,6 +50,13 @@ public class GUI extends JFrame {
         panel.setBackground( new Color ( 164, 151, 142 ) );
     }
 
+    private void changeIcon(int i, int j, String imgName){
+        URL imageURL = getClass().getResource(imgName);
+        if (imageURL != null) {
+            backside = new ImageIcon(imageURL);
+        }
+        backgroundImages[i][j].setIcon(backside);
+    }
 
     public GUI(){
         frame = new JFrame();
@@ -71,6 +68,9 @@ public class GUI extends JFrame {
         maze = Agents.maze;
         numberOfRows = maze.getRows();
         numberOfCols = maze.getCols();
+
+        agent1 = Agents.agent1;
+        agent2 = Agents.agent2;
 
 
         setMapPanel();
