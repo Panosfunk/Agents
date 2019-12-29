@@ -30,7 +30,7 @@ public class Simulation {
         
         for(int i=0;i<totalAgs;i++)
         {
-            agents.add(new Agent(i));
+//            agents.add(new Agent(i));
         }
     }
     

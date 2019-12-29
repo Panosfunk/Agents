@@ -23,14 +23,17 @@ public class Agent {
     State state;
     boolean won;
     Pair position;                  //his position is a pair of coordinates
+    String name;
     
-    public Agent(int id) {
+    public Agent(int id, String name) {
         this.id = id;
+        this.name = name;
         won = false;
-        position = new Pair();
+        position = new Pair(0, 0);
     }
-    public Agent(int id, int x, int y) {
+    public Agent(int id, int x, int y, String name) {
         this.id = id;
+        this.name = name;
         won = false;
         position = new Pair(x, y);
     }
