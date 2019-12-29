@@ -42,6 +42,7 @@ public class GUI extends JFrame {
                     changeIcon(i, j,"images/finish.jpg");
                 }
                 panel.add(backgroundImages[i][j]);
+
             }
         }
 
