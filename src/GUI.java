@@ -22,7 +22,7 @@ public class GUI extends JFrame {
     private int numberOfRows;
     private int numberOfCols;
     private Stack<String> nameStack;
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void setMapPanel(){
         panel = new JPanel();
