@@ -43,8 +43,6 @@ public class Agents {
         GUI gui = new GUI();
 
         gui.sim = sim;
-        
-        System.out.println("Hello World");
 
     }
 
