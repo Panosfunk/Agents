@@ -6,6 +6,7 @@
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  *
@@ -27,9 +28,43 @@ public class Simulation {
         maze = new Maze(rows, cols);
         agentList = Agents.agentList;
         agPositions = new HashMap<>();
+        
+        Random random = new Random();
+        
+        for(int i=0;i<totalAgs;i++)
+        {
+            Agent agent = new Agent(i, "AGENT_"+i);
+            
+            int randX = 2 * random.nextInt(maze.getCols()/2);
+            int randY = 2 * random.nextInt(maze.getRows()/2);
+            
+            agPositions.put(agent.id, new Pair(randX, randY));
+        }
     }
 
-
+    void moveAg(int id, Move move)
+    {
+        Pair pos = agPositions.get(id);
+        
+        switch(move)
+        {
+            case UP:
+                pos.y--;
+                break;
+            case DOWN:
+                pos.y++;
+                break;
+            case LEFT:
+                pos.x--;
+                break;
+            case RIGHT:
+                pos.x++;
+                break;
+        }       
+        
+        agPositions.put(id, pos);
+            
+    }
 
     void start()
     {

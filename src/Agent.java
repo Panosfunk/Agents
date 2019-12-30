@@ -80,7 +80,14 @@ public class Agent {
     }
 
     public Move randomMove(){
-        validMoves = getValidMoves(position.x, position.y, 1, moves.pop());
+        Move previousMove = Move.NULL;
+                
+        if(!moves.isEmpty())
+        {
+            previousMove = moves.peek();
+        }
+        
+        validMoves = getValidMoves(position.x, position.y, 1, previousMove);
 
         Random r = new Random();
 
@@ -90,8 +97,7 @@ public class Agent {
             moves.push(validMoves.get(idx));
             return validMoves.get(idx);
         }
-
-        moves.pop();
+        
         return null;
     }
 
