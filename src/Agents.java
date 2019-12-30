@@ -39,10 +39,15 @@ public class Agents {
         nameStack = new Stack<>();
         initializeStack();
 
+
         agentList.add(new Agent(1, 0, 0, nameStack.pop()));
         System.out.println(agentList.get(0).name);
         agentList.add(new Agent(2, 2, 2, nameStack.pop()));
         System.out.println(agentList.get(1).name);
+
+        for (Agent agent : agentList) {
+            agent.maze = maze.getMaze();
+        }
 
         GUI gui = new GUI();
 

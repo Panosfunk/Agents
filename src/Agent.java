@@ -24,6 +24,7 @@ public class Agent {
     boolean won;
     Pair position;                  //his position is a pair of coordinates
     String name;
+    int[][] maze;
     
     public Agent(int id, String name) {
         this.id = id;
@@ -31,13 +32,69 @@ public class Agent {
         won = false;
         position = new Pair(0, 0);
     }
+
     public Agent(int id, int x, int y, String name) {
         this.id = id;
         this.name = name;
         won = false;
         position = new Pair(x, y);
     }
-    
+
+    public boolean inBounds(int x, int y) {
+        return (x >= 0 && y >= 0 && x <= maze.length && y <= maze[0].length); //mporei na einai anapoda
+    }
+
+    //returns true if the cell has been visited or is out of bounds
+    public boolean hasObj(int obj, int x, int y) {
+        return !inBounds(x, y) || maze[x][y] == obj;
+    }
+
+    public ArrayList<Move> getValidMoves(int x, int y, int offset, Move previous) {
+        ArrayList<Move> validMoves = new ArrayList<>();
+
+        int xUp = x;
+        int yUp = y-offset;
+
+        int xDown = x;
+        int yDown = y+offset;
+
+        int xRight = x+offset;
+        int yRight = y;
+
+        int xLeft = x-offset;
+        int yLeft = y;
+
+        if(!hasObj(Maze.PASS,xUp,yUp) && previous!=Move.DOWN)
+            validMoves.add(Move.UP);
+
+        if(!hasObj(Maze.PASS, xDown, yDown) && previous!=Move.UP)
+            validMoves.add(Move.DOWN);
+
+        if(!hasObj(Maze.PASS, xRight, yRight) && previous!=Move.LEFT)
+            validMoves.add(Move.RIGHT);
+
+        if(!hasObj(Maze.PASS, xLeft, yLeft) && previous!=Move.RIGHT)
+            validMoves.add(Move.LEFT);
+
+        return validMoves;
+    }
+
+    public Move randomMove(){
+        validMoves = getValidMoves(position.x, position.y, 1, moves.pop());
+
+        Random r = new Random();
+
+        if(!validMoves.isEmpty())
+        {
+            int idx = r.nextInt(validMoves.size());
+            moves.push(validMoves.get(idx));
+            return validMoves.get(idx);
+        }
+
+        moves.pop();
+        return null;
+    }
+
     void setWin(boolean won)
     {
         this.won = won;

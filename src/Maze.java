@@ -52,36 +52,6 @@ public class Maze {
         return false;
     }
     
-    public ArrayList<Move> getValidMoves(int x, int y, int offset, Move previous) {
-        ArrayList<Move> validMoves = new ArrayList<>();
-        
-        int xUp = x;
-        int yUp = y-offset;
-        
-        int xDown = x;
-        int yDown = y+offset;
-        
-        int xRight = x+offset;
-        int yRight = y;
-        
-        int xLeft = x-offset;
-        int yLeft = y;
-        
-        if(!hasObj(PASS,xUp,yUp) && previous!=Move.DOWN)
-            validMoves.add(Move.UP);
-        
-        if(!hasObj(PASS, xDown, yDown) && previous!=Move.UP)
-            validMoves.add(Move.DOWN);
-        
-        if(!hasObj(PASS, xRight, yRight) && previous!=Move.LEFT)
-            validMoves.add(Move.RIGHT);
-        
-        if(!hasObj(PASS, xLeft, yLeft) && previous!=Move.RIGHT)
-            validMoves.add(Move.LEFT);
-        
-        return validMoves;
-    }
-    
     public ArrayList<Pair> getValidPos(int x, int y, int offset) {
         ArrayList<Pair> validMoves = new ArrayList<>();
         
@@ -159,7 +129,11 @@ public class Maze {
         
         maze[rows-1][cols-1] = EXIT;
     }
-    
+
+    public int[][] getMaze() {
+        return maze;
+    }
+
     int getCell(int x, int y) {
         if(inBounds(x,y))
             return maze[x][y];

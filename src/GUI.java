@@ -61,8 +61,6 @@ public class GUI extends JFrame {
         backgroundImages[i][j].setIcon(backside);
     }
 
-
-
     public GUI(){
         frame = new JFrame();
         frame.setTitle("Labyrinth");

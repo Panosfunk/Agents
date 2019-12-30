@@ -16,8 +16,8 @@ public class Simulation {
     int time;
     
     Maze maze;
-    ArrayList<Agent> agents;
     HashMap<Integer,Pair> agPositions;
+    ArrayList<Agent> agentList;
     
     Agent winner;
     
@@ -25,15 +25,12 @@ public class Simulation {
     {
         time = 0;
         maze = new Maze(rows, cols);
-        agents = new ArrayList<>();
+        agentList = Agents.agentList;
         agPositions = new HashMap<>();
-        
-        for(int i=0;i<totalAgs;i++)
-        {
-//            agents.add(new Agent(i));
-        }
     }
-    
+
+
+
     void start()
     {
         //code for simulation here
