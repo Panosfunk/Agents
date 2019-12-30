@@ -4,6 +4,7 @@ import java.awt.*;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Stack;
 
 public class GUI extends JFrame {
@@ -11,8 +12,7 @@ public class GUI extends JFrame {
     private static final int BORDER_GAP_SIZE = 30;  // different gap between the edges and the cards
     private static final int GRID_GAP_SIZE = 0;     // gap size between each grid cell
 
-    Maze maze;
-    ArrayList<Agent> agentList;
+    Simulation sim;
 
     private JFrame frame;
     private JPanel panel;
@@ -31,16 +31,16 @@ public class GUI extends JFrame {
             for ( int j = 0; j < numberOfCols; j++){
                 backgroundImages[i][j] = new JLabel();
                 backgroundImages[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                if(maze.getCell(i, j) == Maze.WALL) {
+                if(sim.maze.getCell(i, j) == Maze.WALL) {
                     changeIcon(i, j,"images/wall.jpg");
-                }else if ( maze.getCell(i, j) == Maze.PASS){
+                }else if ( sim.maze.getCell(i, j) == Maze.PASS){
                     changeIcon(i, j, "images/tile.jpg");
-                    for (Agent agent : agentList) {
-                        if (i == agent.position.x && j == agent.position.y) {
-                            changeIcon(i, j, agent.name);
+                    for (Pair agPos: sim.agPositions.values()) {
+                        if (i == agPos.x && j == agPos.y) {
+                            //changeIcon(i, j, agent.name);
                         }
                     }
-                }else if ( maze.getCell(i, j) == Maze.EXIT){
+                }else if ( sim.maze.getCell(i, j) == Maze.EXIT){
                     changeIcon(i, j,"images/finish.jpg");
                 }
                 panel.add(backgroundImages[i][j]);
@@ -67,12 +67,10 @@ public class GUI extends JFrame {
 
         frame.setResizable(true);
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-        maze = Agents.maze;
-        numberOfRows = maze.getRows();
-        numberOfCols = maze.getCols();
-
-        agentList = Agents.agentList;
+        
+        numberOfRows = sim.maze.getRows();
+        numberOfCols = sim.maze.getCols();
+        
         nameStack = Agents.nameStack;
 
         setMapPanel();
