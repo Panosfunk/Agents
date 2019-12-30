@@ -31,27 +31,18 @@ public class Agents {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        maze = new Maze( 15, 15);
-        maze.generate();
-//        maze.print();
-
-        agentList = new ArrayList<>();
+        int totalAgs = 2;
+        int rows = 5;
+        int cols = 5;
+        
+        Simulation sim = new Simulation(totalAgs, rows, cols);
+        
         nameStack = new Stack<>();
         initializeStack();
 
-
-        agentList.add(new Agent(1, 0, 0, nameStack.pop()));
-        System.out.println(agentList.get(0).name);
-        agentList.add(new Agent(2, 2, 2, nameStack.pop()));
-        System.out.println(agentList.get(1).name);
-
-        for (Agent agent : agentList) {
-            agent.maze = maze.getMaze();
-        }
-
         GUI gui = new GUI();
 
-
+        gui.sim = sim;
 
     }
 
