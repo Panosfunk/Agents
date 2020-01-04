@@ -51,6 +51,13 @@ public class GUI extends JFrame {
         panel.setLayout(new GridLayout(numberOfRows, numberOfCols, GRID_GAP_SIZE, GRID_GAP_SIZE));
         panel.setBorder(new EmptyBorder( BORDER_GAP_SIZE, BORDER_GAP_SIZE, BORDER_GAP_SIZE, BORDER_GAP_SIZE ) );
         panel.setBackground( new Color ( 164, 151, 142 ) );
+        
+        for(int i=0;i<sim.agPositions.size();i++)
+        {
+        changeIcon(sim.agPositions.get(i).x,sim.agPositions.get(i).y,"images/bond.jpg");
+        System.out.println("start ("+sim.agPositions.get(i).x+","+sim.agPositions.get(i).y+")");
+        }
+        
     }
 
     private void changeIcon(int i, int j, String imgName){
@@ -61,7 +68,8 @@ public class GUI extends JFrame {
         backgroundImages[i][j].setIcon(backside);
     }
 
-    public GUI(){
+    public GUI(Simulation sim){
+        this.sim=sim;
         frame = new JFrame();
         frame.setTitle("Labyrinth");
 
@@ -81,6 +89,6 @@ public class GUI extends JFrame {
         frame.setExtendedState(MAXIMIZED_BOTH);
         frame.pack();
         frame.setVisible(true);
-
+        
     }
 }

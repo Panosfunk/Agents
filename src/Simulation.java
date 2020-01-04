@@ -20,11 +20,13 @@ public class Simulation {
     Maze maze;
     HashMap<Integer,Pair> agPositions;
     ArrayList<Agent> agentList;
-    
+    //Agents Team;
     Simulation(int totalAgs, int rows, int cols)
     {
+        agentList = new ArrayList<Agent>();
         maze = new Maze(rows, cols);
-        agentList = Agents.agentList;
+        maze.generate();
+        //Team = new Agents();
         agPositions = new HashMap<>();
         winners = 0;
         
@@ -33,45 +35,47 @@ public class Simulation {
         for(int i=0;i<totalAgs;i++)
         {
             Agent agent = new Agent(i, "AGENT_"+i);
-            agentList.add(agent);
+            this.agentList.add(agent);
             
             int randX = 2 * random.nextInt(maze.getCols()/2);
             int randY = 2 * random.nextInt(maze.getRows()/2);
+            
+            
             
             agPositions.put(agent.id, new Pair(randX, randY));
         }
     }
     
     public void setAgValidMoves(int id, int offset) {
-        Agent agent = agentList.get(id);
+        Agent agent = this.agentList.get(id);
         Pair pos = agPositions.get(id);
         
         Move previous = agent.moves.peek();
         
         ArrayList<Move> validMoves = new ArrayList<>();
 
-        int xUp = pos.x;
-        int yUp = pos.y-offset;
+        int xUp = pos.x-offset;
+        int yUp = pos.y;
 
-        int xDown = pos.x;
-        int yDown = pos.y+offset;
+        int xDown = pos.x+offset;
+        int yDown = pos.y;
 
-        int xRight = pos.x+offset;
-        int yRight = pos.y;
+        int xRight = pos.x;
+        int yRight = pos.y+offset;
 
-        int xLeft = pos.x-offset;
-        int yLeft = pos.y;
+        int xLeft = pos.x;
+        int yLeft = pos.y-offset;
 
-        if(!maze.hasObj(Maze.PASS,xUp,yUp) && previous!=Move.DOWN)
+        if(!maze.hasObj(Maze.WALL,xUp,yUp) && previous!=Move.DOWN)
             validMoves.add(Move.UP);
 
-        if(!maze.hasObj(Maze.PASS, xDown, yDown) && previous!=Move.UP)
+        if(!maze.hasObj(Maze.WALL, xDown, yDown) && previous!=Move.UP)
             validMoves.add(Move.DOWN);
 
-        if(!maze.hasObj(Maze.PASS, xRight, yRight) && previous!=Move.LEFT)
+        if(!maze.hasObj(Maze.WALL, xRight, yRight) && previous!=Move.LEFT)
             validMoves.add(Move.RIGHT);
 
-        if(!maze.hasObj(Maze.PASS, xLeft, yLeft) && previous!=Move.RIGHT)
+        if(!maze.hasObj(Maze.WALL, xLeft, yLeft) && previous!=Move.RIGHT)
             validMoves.add(Move.LEFT);
 
         Collections.shuffle(validMoves);
@@ -86,28 +90,112 @@ public class Simulation {
         switch(move)
         {
             case UP:
-                pos.y--;
+                pos.x--;
+                System.out.println("UP ("+pos.x+","+pos.y+")");
                 break;
             case DOWN:
-                pos.y++;
+                pos.x++;
+                System.out.println("DOWN ("+pos.x+","+pos.y+")");
                 break;
             case LEFT:
-                pos.x--;
+                pos.y--;
+                System.out.println("LEFT ("+pos.x+","+pos.y+")");
                 break;
             case RIGHT:
-                pos.x++;
+                pos.y++;
+                System.out.println("RIGHT ("+pos.x+","+pos.y+")");
                 break;
         }       
         
         agPositions.put(id, pos);
     }
-
+    public void Intersection_Move(Agent agent)
+    {
+        Move back = agent.moves.pop();
+        Pair pos = agPositions.get(agent.id);            
+        switch(back)
+        {
+            case UP:
+                moveAg(agent.id,Move.DOWN);
+                break;
+            case DOWN:
+                moveAg(agent.id,Move.UP);
+                break;
+            case LEFT:
+                moveAg(agent.id,Move.RIGHT);
+                break;
+            case RIGHT:
+                moveAg(agent.id,Move.LEFT);
+                break;
+        }
+    }
     void start()
     {
-        Agent agent = agentList.get(0);
-        while(winners != agentList.size())
+        //maze.print();
+        int noOfAgsPlayed=0;      
+        while(winners != this.agentList.size())
         {
-            setAgValidMoves(agent.id, 1);
-        }        
+            Agent agent = this.agentList.get(noOfAgsPlayed);
+            System.out.println(agent.name);
+            if(!agent.won)
+            {
+                if(!agent.pop)
+                {
+                   setAgValidMoves(agent.id, 1);
+                   Move demove = agent.randomMove();
+                   if(demove != null)
+                   {
+                      moveAg(agent.id, demove);
+                   }
+                    else
+                    {
+                      agent.pop = true;
+                      Intersection_Move(agent);
+                    }
+                }
+                else{
+                    if(agent.moves.peek()!=Move.INTERSECTION)
+                    {
+                      Intersection_Move(agent);
+                    }
+                    else{
+                         agent.pop = false;
+                         agent.moves.pop();
+                         moveAg(agent.id, agent.moves.peek());
+                        }
+                    }
+                 Pair pos = agPositions.get(agent.id);
+                 if(pos.x == maze.getCols()-1 && pos.y == maze.getRows()-1)
+                 {
+                   winners++;
+                   agent.setWin(true);
+                 }
+            }
+            if(noOfAgsPlayed + 1 == agentList.size())
+            {
+                noOfAgsPlayed = 0;
+                for(int i = 0; i < agentList.size() - 1; i++)
+                {
+                    for(int j = i + 1; j < agentList.size(); j++)
+                    {
+                        if(agPositions.get(i).x == agPositions.get(j).x && agPositions.get(i).y == agPositions.get(j).y)
+                        {
+                            Agent agent1 = agentList.get(i);
+                            Agent agent2 = agentList.get(j);
+                            agent1.meetAgent(agent2.getId());
+                            agent2.meetAgent(agent1.getId());
+                        }
+                    }
+                }
+            }
+            else
+                noOfAgsPlayed++;
+        }
+        for(int i=0;i<this.agentList.size();i++)
+        {
+            Agent agent1 = this.agentList.get(i);
+            System.out.println("Agent" + i);
+//            agent1.Sout();
+        }
     }
 }

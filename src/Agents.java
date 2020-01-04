@@ -17,9 +17,8 @@ import java.util.Stack;
 public class Agents {
 
     static Maze maze;
-    static ArrayList<Agent> agentList;
+    //static ArrayList<Agent> agentList;
     static Stack<String> nameStack;
-
 
     private static void initializeStack(){
         nameStack.add("images/agentOnTile.jpg");
@@ -31,7 +30,7 @@ public class Agents {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        int totalAgs = 2;
+        int totalAgs = 4;
         int rows = 5;
         int cols = 5;
         
@@ -39,10 +38,8 @@ public class Agents {
         
         nameStack = new Stack<>();
         initializeStack();
-
-        GUI gui = new GUI();
-
-        gui.sim = sim;
+        GUI gui = new GUI(sim);
+        sim.start();
 
     }
 

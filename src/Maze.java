@@ -32,16 +32,19 @@ public class Maze {
     
     public boolean inBounds(int x, int y)
     {
-        return (x >= 0 && y >= 0 && x <= rows && y <= cols);
+        return (x >= 0 && y >= 0 && x <= rows-1 && y <= cols-1);
     }
     
     //returns true if the cell has been visited or is out of bounds
     public boolean hasObj(int obj, int x, int y) {
-        if(!inBounds(x,y) || maze[x][y] == obj)
+        if(!inBounds(x,y))
+            return true;
+        else if(maze[x][y] == obj)
             return true;
         
         return false;
     }
+    
     
     public boolean add(int obj, int x, int y) {
         if(inBounds(x,y)){
@@ -55,17 +58,17 @@ public class Maze {
     public ArrayList<Pair> getValidPos(int x, int y, int offset) {
         ArrayList<Pair> validMoves = new ArrayList<>();
         
-        int xUp = x;
-        int yUp = y-offset;
+        int xUp = x-offset;
+        int yUp = y;
         
-        int xDown = x;
-        int yDown = y+offset;
+        int xDown = x+offset;
+        int yDown = y;
         
-        int xRight = x+offset;
-        int yRight = y;
+        int xRight = x;
+        int yRight = y+offset;
         
-        int xLeft = x-offset;
-        int yLeft = y;
+        int xLeft = x;
+        int yLeft = y-offset;
         
         if(!hasObj(PASS,xUp,yUp))
             validMoves.add(new Pair(xUp, yUp));

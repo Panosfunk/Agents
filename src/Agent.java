@@ -22,6 +22,8 @@ public class Agent {
     ArrayList<Move> validMoves;
     State state;
     boolean won;
+    boolean pop;
+    boolean[] meet;
     //Pair position;                  //his position is a pair of coordinates
     String name;
     
@@ -29,6 +31,14 @@ public class Agent {
         this.id = id;
         this.name = name;
         won = false;
+        this.pop = false;
+        moves = new Stack();
+        moves.add(Move.NULL);
+        meet = new boolean[4];
+        for(int i=0;i<4;i++)
+        {
+            meet[i] = false;
+        }
         //position = new Pair(0, 0);
     }
 
@@ -98,6 +108,15 @@ public class Agent {
     void sendToAll(Message message)
     {
         MessageManager.sendToAll(message);
+    }
+    void meetAgent(int id)
+    {
+        this.meet[id] = true;
+    }
+    void Sout()
+    {
+        for(int i=0;i<4;i++)
+            System.out.println(this.meet[i]);
     }
     
 }
