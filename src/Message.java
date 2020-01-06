@@ -11,10 +11,23 @@
 public class Message {
     
     int agId;
-    String message;
+    State[] message;
     
-    Message(String message)
+    Message(int numOfAgents)
     {
-        this.message = message;
+        message = new State[numOfAgents];
+        for (int i=0;i<numOfAgents;i++)
+        {
+            message[i] = State.EXPLORING;
+        }
+    }
+    
+    void setMessage(int id, State st){
+        message[id] = st;
+    }
+    
+    public State getMessage(int id)
+    {
+        return message[id];
     }
 }

@@ -14,8 +14,10 @@ public class Maze {
     public static final int WALL = 0;
     public static final int PASS = 1;
     public static final int EXIT = 2;
+    public static final int DEAD_END = -1;
+    public static final int EMPTY = -2;
 
-    int maze[][];
+    int maze[][][];
     private int rows, cols;
     
     public Maze() {
@@ -27,7 +29,24 @@ public class Maze {
     public Maze(int rows, int cols) {
         this.rows = 2 * rows + 1;
         this.cols = 2 * cols + 1;
-        maze = new int[this.rows][this.cols];
+        maze = new int[this.rows][this.cols][2];
+        for(int i=0;i<this.rows;i++)
+        {
+            for(int j=0;j<this.cols;j++)
+            {
+                maze[i][j][1] = EMPTY;
+            }
+        }
+    }
+    
+    public void setMaze(int row, int col, int message)
+    {
+        maze[row][col][1] = message;
+    }
+    
+    public int getMazeMessage(int row, int col)
+    {
+        return maze[row][col][1];
     }
     
     public boolean inBounds(int x, int y)
@@ -39,7 +58,7 @@ public class Maze {
     public boolean hasObj(int obj, int x, int y) {
         if(!inBounds(x,y))
             return true;
-        else if(maze[x][y] == obj)
+        else if(maze[x][y][0] == obj)
             return true;
         
         return false;
@@ -48,7 +67,7 @@ public class Maze {
     
     public boolean add(int obj, int x, int y) {
         if(inBounds(x,y)){
-            maze[x][y] = obj;
+            maze[x][y][0] = obj;
             return true;
         }
         
@@ -130,16 +149,16 @@ public class Maze {
             
         };
         
-        maze[rows-1][cols-1] = EXIT;
+        maze[rows-1][cols-1][0] = EXIT;
     }
 
-    public int[][] getMaze() {
+    public int[][][] getMaze() {
         return maze;
     }
 
     int getCell(int x, int y) {
         if(inBounds(x,y))
-            return maze[x][y];
+            return maze[x][y][0];
         
         return -1;
     }
@@ -159,7 +178,7 @@ public class Maze {
         {
             for(int j=0;j<cols;j++)
             {
-                System.out.print(maze[i][j]+" ");
+                System.out.print(maze[i][j][0]+" ");
             }
             System.out.println("");
         }

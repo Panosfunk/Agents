@@ -39,7 +39,7 @@ public class Agents {
         nameStack = new Stack<>();
         initializeStack();
         GUI gui = new GUI(sim);
-        sim.start();
+        //sim.start();
 
     }
 

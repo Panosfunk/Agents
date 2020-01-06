@@ -35,9 +35,9 @@ public class GUI extends JFrame {
                     changeIcon(i, j,"images/wall.jpg");
                 }else if ( sim.maze.getCell(i, j) == Maze.PASS){
                     changeIcon(i, j, "images/tile.jpg");
-                    for (Pair agPos: sim.agPositions.values()) {
-                        if (i == agPos.x && j == agPos.y) {
-                            //changeIcon(i, j, agent.name);
+                    for (int k = 0; k < sim.agentList.size(); k++) {
+                        if (i == sim.agPositions.get(k).x && j == sim.agPositions.get(k).y) {
+                            changeIcon(i, j, sim.agentList.get(k).id, sim.agentList.get(k).name);
                         }
                     }
                 }else if ( sim.maze.getCell(i, j) == Maze.EXIT){
@@ -52,12 +52,6 @@ public class GUI extends JFrame {
         panel.setBorder(new EmptyBorder( BORDER_GAP_SIZE, BORDER_GAP_SIZE, BORDER_GAP_SIZE, BORDER_GAP_SIZE ) );
         panel.setBackground( new Color ( 164, 151, 142 ) );
         
-        for(int i=0;i<sim.agPositions.size();i++)
-        {
-        changeIcon(sim.agPositions.get(i).x,sim.agPositions.get(i).y,"images/bond.jpg");
-        System.out.println("start ("+sim.agPositions.get(i).x+","+sim.agPositions.get(i).y+")");
-        }
-        
     }
 
     private void changeIcon(int i, int j, String imgName){
@@ -66,6 +60,16 @@ public class GUI extends JFrame {
             backside = new ImageIcon(imageURL);
         }
         backgroundImages[i][j].setIcon(backside);
+        backgroundImages[i][j].setText("");
+    }
+    private void changeIcon(int i, int j, int id, String imgName){
+        URL imageURL = getClass().getResource(imgName);
+        if (imageURL != null) {
+            backside = new ImageIcon(imageURL);
+        }
+        backgroundImages[i][j].setIcon(backside);
+        backgroundImages[i][j].setText(String.valueOf(id));
+        backgroundImages[i][j].setHorizontalTextPosition(JLabel.CENTER);
     }
 
     public GUI(Simulation sim){
@@ -89,6 +93,6 @@ public class GUI extends JFrame {
         frame.setExtendedState(MAXIMIZED_BOTH);
         frame.pack();
         frame.setVisible(true);
-        
+        sim.start(backgroundImages);
     }
 }

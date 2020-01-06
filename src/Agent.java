@@ -24,6 +24,7 @@ public class Agent {
     boolean won;
     boolean pop;
     boolean[] meet;
+
     //Pair position;                  //his position is a pair of coordinates
     String name;
     
@@ -39,6 +40,8 @@ public class Agent {
         {
             meet[i] = false;
         }
+        state = State.EXPLORING;
+
         //position = new Pair(0, 0);
     }
 
@@ -72,6 +75,7 @@ public class Agent {
             }
             moves.push(validMoves.get(validMoves.size()-1));
             
+            
             return moves.peek();
         }
         
@@ -79,16 +83,29 @@ public class Agent {
         
         return null;
     }
+    
+
 
     void setWin(boolean won)
     {
         this.won = won;
     }
     
+    void setState(State st)
+    {
+        this.state = st;
+    }
+    
+    State getState()
+    {
+        return this.state;
+    }
+    
     int getId() 
     {
         return id;
     }
+    
     
     void addMessage(Message message)
     {

@@ -4,10 +4,13 @@
  * and open the template in the editor.
  */
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 /**
  *
@@ -16,10 +19,12 @@ import java.util.Random;
 public class Simulation {
     
     int winners;
+    private ImageIcon backside;
     
     Maze maze;
     HashMap<Integer,Pair> agPositions;
     ArrayList<Agent> agentList;
+    Message messenger;
     //Agents Team;
     Simulation(int totalAgs, int rows, int cols)
     {
@@ -46,9 +51,28 @@ public class Simulation {
         }
     }
     
+    private void changeIcon(int i, int j, String imgName, JLabel[][] backgroundImages){
+        URL imageURL = getClass().getResource(imgName);
+        if (imageURL != null) {
+            backside = new ImageIcon(imageURL);
+        }
+        backgroundImages[i][j].setIcon(backside);
+        backgroundImages[i][j].setText("");
+    }
+    private void changeIcon(int i, int j, int id, String imgName, JLabel[][] backgroundImages){
+        URL imageURL = getClass().getResource(imgName);
+        if (imageURL != null) {
+            backside = new ImageIcon(imageURL);
+        }
+        backgroundImages[i][j].setIcon(backside);
+        backgroundImages[i][j].setText(String.valueOf(id));
+        backgroundImages[i][j].setHorizontalTextPosition(JLabel.CENTER);
+    }
+    
     public void setAgValidMoves(int id, int offset) {
         Agent agent = this.agentList.get(id);
         Pair pos = agPositions.get(id);
+        boolean exit = false;
         
         Move previous = agent.moves.peek();
         
@@ -66,27 +90,78 @@ public class Simulation {
         int xLeft = pos.x;
         int yLeft = pos.y-offset;
 
-        if(!maze.hasObj(Maze.WALL,xUp,yUp) && previous!=Move.DOWN)
-            validMoves.add(Move.UP);
+        if(!maze.hasObj(Maze.WALL,xUp,yUp) && previous!=Move.DOWN && maze.getMazeMessage(xUp, yUp) != -1){
+            if(maze.getMazeMessage(xUp, yUp) != -2)
+            {
+                if(messenger.getMessage(maze.getMazeMessage(xUp, yUp)) == State.EXIT)
+                {
+                    exit = true;
+                }
+                validMoves.add(Move.UP);
+            }
+            else
+            {
+                validMoves.add(Move.UP);
+            }
+        }
 
-        if(!maze.hasObj(Maze.WALL, xDown, yDown) && previous!=Move.UP)
-            validMoves.add(Move.DOWN);
+        if(!maze.hasObj(Maze.WALL, xDown, yDown) && previous!=Move.UP && maze.getMazeMessage(xDown, yDown) != -1 && !exit){
+            if(maze.getMazeMessage(xDown, yDown) != -2)
+            {
+                if(messenger.getMessage(maze.getMazeMessage(xDown, yDown)) == State.EXIT)
+                {
+                    validMoves.clear();
+                    exit = true;
+                }
+                validMoves.add(Move.DOWN);
+            }
+            else
+            {
+                validMoves.add(Move.DOWN);
+            }
+        }
 
-        if(!maze.hasObj(Maze.WALL, xRight, yRight) && previous!=Move.LEFT)
-            validMoves.add(Move.RIGHT);
+        if(!maze.hasObj(Maze.WALL, xRight, yRight) && previous!=Move.LEFT && maze.getMazeMessage(xRight, yRight) != -1 && !exit){
+            if(maze.getMazeMessage(xRight, yRight) != -2)
+            {
+                if(messenger.getMessage(maze.getMazeMessage(xRight, yRight)) == State.EXIT)
+                {
+                    validMoves.clear();
+                    exit = true;
+                }
+                validMoves.add(Move.RIGHT);
+            }
+            else
+            {
+                validMoves.add(Move.RIGHT);
+            }
+        }
 
-        if(!maze.hasObj(Maze.WALL, xLeft, yLeft) && previous!=Move.RIGHT)
-            validMoves.add(Move.LEFT);
+        if(!maze.hasObj(Maze.WALL, xLeft, yLeft) && previous!=Move.RIGHT && maze.getMazeMessage(xLeft, yLeft) != -1 && !exit){
+            if(maze.getMazeMessage(xLeft, yLeft) != -2)
+            {
+                if(messenger.getMessage(maze.getMazeMessage(xLeft, yLeft)) == State.EXIT)
+                {
+                    validMoves.clear();
+                    exit = true;
+                }
+                validMoves.add(Move.LEFT);
+            }
+            else
+            {
+                validMoves.add(Move.LEFT);
+            }
+        }
 
         Collections.shuffle(validMoves);
         
         agent.validMoves = validMoves;
     }
 
-    void moveAg(int id, Move move)
+    void moveAg(int id, Move move, JLabel[][] backgroundImages)
     {
         Pair pos = agPositions.get(id);
-        
+        changeIcon(pos.x,pos.y,"images/tile.jpg",backgroundImages);
         switch(move)
         {
             case UP:
@@ -105,33 +180,50 @@ public class Simulation {
                 pos.y++;
                 System.out.println("RIGHT ("+pos.x+","+pos.y+")");
                 break;
-        }       
+        }
+        changeIcon(pos.x,pos.y, id,"images/bond.jpg",backgroundImages);
         
         agPositions.put(id, pos);
     }
-    public void Intersection_Move(Agent agent)
+    public void Intersection_Move(Agent agent, JLabel[][] backgroundImages)
     {
         Move back = agent.moves.pop();
-        Pair pos = agPositions.get(agent.id);            
+        Pair pos = agPositions.get(agent.id);
+        if(agent.moves.peek() == Move.INTERSECTION)
+        {
+            maze.setMaze(pos.x, pos.y, -1);
+        }
         switch(back)
         {
             case UP:
-                moveAg(agent.id,Move.DOWN);
+                moveAg(agent.id,Move.DOWN, backgroundImages);
                 break;
             case DOWN:
-                moveAg(agent.id,Move.UP);
+                moveAg(agent.id,Move.UP, backgroundImages);
                 break;
             case LEFT:
-                moveAg(agent.id,Move.RIGHT);
+                moveAg(agent.id,Move.RIGHT, backgroundImages);
                 break;
             case RIGHT:
-                moveAg(agent.id,Move.LEFT);
+                moveAg(agent.id,Move.LEFT, backgroundImages);
                 break;
         }
     }
-    void start()
+    
+    void messageUpdate()
+    {
+        for(int i=0;i<this.agentList.size();i++)
+        {
+            Agent agent = this.agentList.get(i);
+            messenger.setMessage(i, agent.getState());
+        }
+    }
+    
+    
+    void start(JLabel[][] backgroundImages)
     {
         //maze.print();
+        messenger = new Message(this.agentList.size());
         int noOfAgsPlayed=0;      
         while(winners != this.agentList.size())
         {
@@ -145,23 +237,29 @@ public class Simulation {
                    Move demove = agent.randomMove();
                    if(demove != null)
                    {
-                      moveAg(agent.id, demove);
+                      moveAg(agent.id, demove, backgroundImages);
+                      if(agent.validMoves.size() > 1)
+                      {
+                          maze.setMaze(agPositions.get(agent.id).x, agPositions.get(agent.id).y, agent.getId());
+                      }
                    }
                     else
                     {
-                      agent.pop = true;
-                      Intersection_Move(agent);
+                        agent.pop = true;
+                        Intersection_Move(agent, backgroundImages);
+                        agent.setState(State.DEAD_END);
                     }
                 }
                 else{
                     if(agent.moves.peek()!=Move.INTERSECTION)
                     {
-                      Intersection_Move(agent);
+                      Intersection_Move(agent, backgroundImages);
                     }
                     else{
                          agent.pop = false;
                          agent.moves.pop();
-                         moveAg(agent.id, agent.moves.peek());
+                         moveAg(agent.id, agent.moves.peek(), backgroundImages);
+                         agent.setState(State.EXPLORING);
                         }
                     }
                  Pair pos = agPositions.get(agent.id);
@@ -169,24 +267,30 @@ public class Simulation {
                  {
                    winners++;
                    agent.setWin(true);
+                   agent.setState(State.EXIT);
                  }
             }
-            if(noOfAgsPlayed + 1 == agentList.size())
+            if(noOfAgsPlayed+1 == this.agentList.size())
             {
                 noOfAgsPlayed = 0;
-                for(int i = 0; i < agentList.size() - 1; i++)
+                for(int i=0;i<this.agentList.size()-1;i++)
                 {
-                    for(int j = i + 1; j < agentList.size(); j++)
+                    for(int j=i+1;j<this.agentList.size();j++)
                     {
                         if(agPositions.get(i).x == agPositions.get(j).x && agPositions.get(i).y == agPositions.get(j).y)
                         {
-                            Agent agent1 = agentList.get(i);
-                            Agent agent2 = agentList.get(j);
+                            Agent agent1 = this.agentList.get(i);
+                            Agent agent2 = this.agentList.get(j);
                             agent1.meetAgent(agent2.getId());
                             agent2.meetAgent(agent1.getId());
                         }
                     }
                 }
+                messageUpdate();
+                try
+                  { Thread.sleep(500); } 
+                  catch(InterruptedException ex)
+                  { Thread.currentThread().interrupt(); }
             }
             else
                 noOfAgsPlayed++;
@@ -195,7 +299,7 @@ public class Simulation {
         {
             Agent agent1 = this.agentList.get(i);
             System.out.println("Agent" + i);
-//            agent1.Sout();
+            agent1.Sout();
         }
     }
 }

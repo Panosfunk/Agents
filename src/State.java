@@ -9,5 +9,5 @@
  * @author Giannis
  */
 public enum State {
-    WAITING, EXPLORING, DEAD_END;
+    EXPLORING, EXIT, DEAD_END;
 }
