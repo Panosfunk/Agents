@@ -24,33 +24,22 @@ public class Agent {
     boolean won;
     boolean pop;
     boolean[] meet;
-
-    //Pair position;                  //his position is a pair of coordinates
     String name;
     
-    public Agent(int id, String name) {
+    public Agent(int id, String name, int totalAgs) {
         this.id = id;
         this.name = name;
         won = false;
         this.pop = false;
         moves = new Stack();
         moves.add(Move.NULL);
-        meet = new boolean[4];
-        for(int i=0;i<4;i++)
+        meet = new boolean[totalAgs];
+        for(int i=0; i < totalAgs; i++)
         {
             meet[i] = false;
         }
         state = State.EXPLORING;
-
-        //position = new Pair(0, 0);
     }
-
-//    public Agent(int id, int x, int y, String name) {
-//        this.id = id;
-//        this.name = name;
-//        won = false;
-//        position = new Pair(x, y);
-//    }
 
     public Move randomMove(){
         Move previousMove = Move.NULL;

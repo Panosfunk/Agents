@@ -30,7 +30,7 @@ public class Agents {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        int totalAgs = 4;
+        int totalAgs = 6;
         int rows = 5;
         int cols = 5;
         

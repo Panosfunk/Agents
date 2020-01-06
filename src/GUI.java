@@ -16,7 +16,7 @@ public class GUI extends JFrame {
 
     private JFrame frame;
     private JPanel panel;
-    private JLabel backgroundImages[][];
+    private JLabel[][] backgroundImages;
     private ImageIcon backside;
 
     private int numberOfRows;
@@ -69,7 +69,8 @@ public class GUI extends JFrame {
         }
         backgroundImages[i][j].setIcon(backside);
         backgroundImages[i][j].setText(String.valueOf(id));
-        backgroundImages[i][j].setHorizontalTextPosition(JLabel.CENTER);
+        backgroundImages[i][j].setHorizontalTextPosition(JLabel.LEFT);
+        backgroundImages[i][j].setVerticalAlignment(JLabel.CENTER);
     }
 
     public GUI(Simulation sim){

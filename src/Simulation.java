@@ -25,10 +25,10 @@ public class Simulation {
     HashMap<Integer,Pair> agPositions;
     ArrayList<Agent> agentList;
     Message messenger;
-    //Agents Team;
+
     Simulation(int totalAgs, int rows, int cols)
     {
-        agentList = new ArrayList<Agent>();
+        agentList = new ArrayList<>();
         maze = new Maze(rows, cols);
         maze.generate();
         //Team = new Agents();
@@ -37,15 +37,13 @@ public class Simulation {
         
         Random random = new Random();
         
-        for(int i=0;i<totalAgs;i++)
+        for(int i = 0; i < totalAgs; i++)
         {
-            Agent agent = new Agent(i, "AGENT_"+i);
+            Agent agent = new Agent(i, "AGENT_"+i, totalAgs);
             this.agentList.add(agent);
             
             int randX = 2 * random.nextInt(maze.getCols()/2);
             int randY = 2 * random.nextInt(maze.getRows()/2);
-            
-            
             
             agPositions.put(agent.id, new Pair(randX, randY));
         }
@@ -67,6 +65,7 @@ public class Simulation {
         backgroundImages[i][j].setIcon(backside);
         backgroundImages[i][j].setText(String.valueOf(id));
         backgroundImages[i][j].setHorizontalTextPosition(JLabel.CENTER);
+        backgroundImages[i][j].setVerticalAlignment(JLabel.CENTER);
     }
     
     public void setAgValidMoves(int id, int offset) {
